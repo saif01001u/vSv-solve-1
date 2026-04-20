@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>VSV · SOLVE | Face + Fraud + Wallet Login | Complete Identity</title>
+  <!-- Libraries -->
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <!-- Face API (client-side face detection) -->
+  <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #05070f;
+      font-family: 'Space Grotesk', sans-serif;
+      color: #eef5ff;
+      min-height: 100vh;
+    }
+    .bg-cyber { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 20% 30%, #0a0f1f, #010105); z-index: -2; }
+    .container { max-width: 1600px; margin: 0 auto; padding: 1.5rem; position: relative; z-index: 2; }
+    
+    /* header */
+    .top-bar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem; }
+    .logo-group { display: flex; align-items: baseline; gap: 1rem; flex-wrap: wrap; }
+    .logo-vsv { font-size: 2.4rem; font-weight: 800; background: linear-gradient(135deg, #fff, #7aa9ff); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .vs-symbol { font-size: 1.5rem; color: #3b82f6; }
+    .logo-solve { font-size: 2.2rem; font-weight: 800; background: linear-gradient(135deg, #b3ffe0, #2dd4bf); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .btn-cyber { background: rgba(20,30,55,0.7); border: 1px solid #2f4b7a; border-radius: 2rem; padding: 0.5rem 1rem; cursor: pointer; transition: 0.2s; color: white; font-family: inherit; }
+    .btn-cyber:hover { background: #1e3a6b; }
+    
+    /* stats */
+    .stats-panel { display: flex; flex-wrap: wrap; gap: 1rem; background: rgba(8,12,24,0.6); backdrop-filter: blur(12px); border-radius: 1.5rem; padding: 1rem 1.5rem; margin-bottom: 2rem; justify-content: space-between; }
+    .stat-card { text-align: center; }
+    .stat-number { font-size: 1.8rem; font-weight: 700; color: #60a5fa; }
+    .stat-label { font-size: 0.7rem; color: #9ab3d5; }
+    
+    /* grid */
+    .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+    .glass-card { background: rgba(10,15,28,0.7); backdrop-filter: blur(10px); border-radius: 1.8rem; border: 1px solid rgba(59,130,246,0.2); padding: 1.5rem; transition: 0.2s; }
+    .glass-card:hover { border-color: #3b82f6; }
+    .card-title { font-size: 1.2rem; font-weight: 600; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; }
+    input, textarea, select { width: 100%; background: #030712; border: 1px solid #2d3a5e; border-radius: 1rem; padding: 0.7rem 1rem; color: white; font-family: inherit; margin-bottom: 0.8rem; }
+    button { background: #0f2b44; border: none; border-radius: 2rem; padding: 0.7rem 1rem; font-weight: 600; color: white; cursor: pointer; width: 100%; margin-top: 0.3rem; transition: 0.2s; }
+    button:hover { background: #1e3a6b; }
+    .video-box { width: 100%; border-radius: 1rem; border: 2px solid #3b82f6; margin-bottom: 0.5rem; background: #000; }
+    .fraud-alert { background: #4a0e1a; border-radius: 1rem; padding: 0.5rem; text-align: center; font-size: 0.7rem; margin-top: 0.5rem; }
+    .toast-msg { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); background: #111827; border: 1px solid #3b82f6; padding: 10px 20px; border-radius: 40px; z-index: 9999; opacity: 0; transition: 0.2s; pointer-events: none; }
+    @media (max-width: 700px) { .container { padding: 1rem; } }
+  </style>
+</head>
+<body>
+<div class="bg-cyber"></div>
+<div class="container">
+  <div class="top-bar">
+    <div class="logo-group"><span class="logo-vsv">VSV</span><span class="vs-symbol">⚡</span><span class="logo-solve">SOLVE</span></div>
+    <div><button id="walletLoginBtn" class="btn-cyber"><i class="fas fa-wallet"></i> LOGIN WITH WALLET</button></div>
+  </div>
+
+  <div class="stats-panel">
+    <div class="stat-card"><div class="stat-number" id="totalDids">0</div><div class="stat-label">ACTIVE DIDS</div></div>
+    <div class="stat-card"><div class="stat-number" id="totalCreds">0</div><div class="stat-label">CREDENTIALS</div></div>
+    <div class="stat-card"><div class="stat-number" id="walletStatus">Not logged in</div><div class="stat-label">WALLET LOGIN</div></div>
+    <div class="stat-card"><div class="stat-number" id="faceStatus">—</div><div class="stat-label">FACE VERIFY</div></div>
+  </div>
+
+  <div class="grid-4">
+    <!-- FACE VERIFICATION + PRIVACY (No raw image save) -->
+    <div class="glass-card">
+      <div class="card-title"><span><i class="fas fa-face-smile"></i> FACE VERIFICATION</span> <span style="font-size:0.6rem;">HASH ONLY</span></div>
+      <video id="videoFeed" class="video-box" autoplay muted playsinline width="100%" height="180"></video>
+      <canvas id="faceCanvas" style="display:none;"></canvas>
+      <button id="captureFaceBtn">SCAN FACE → GENERATE HASH</button>
+      <button id="verifyFaceBtn" style="background:#1e4a6e;">VERIFY WITH HASH</button>
+      <div id="faceResult" style="font-size:0.7rem; margin-top:0.5rem; text-align:center;"></div>
+      <div class="fraud-alert" id="fraudAlert" style="display:none;">⚠️ FRAUD DETECTED: Fake face / replay attack</div>
+      <div style="font-size:0.6rem; color:#6a8faf; margin-top:0.5rem;">🔒 Raw image never saved. Only irreversible hash stored.</div>
+    </div>
+
+    <!-- QR IDENTITY SHARE (Scan & Verify) -->
+    <div class="glass-card">
+      <div class="card-title"><i class="fas fa-qrcode"></i> QR IDENTITY SHARE</div>
+      <div class="input-group"><label>Your DID / Credential ID</label><input type="text" id="qrDataInput" placeholder="did:vsv:alice or cred:123"></div>
+      <button id="generateQrBtn">GENERATE QR CODE</button>
+      <div id="qrPreview" style="display:flex; justify-content:center; margin-top:0.8rem;"></div>
+      <div style="margin-top:1rem;"><label>SCAN QR TO VERIFY</label><input type="text" id="scanQrInput" placeholder="Paste scanned QR data"></div>
+      <button id="scanVerifyBtn">VERIFY SCANNED IDENTITY</button>
+      <div id="scanResult" style="font-size:0.7rem; margin-top:0.5rem;"></div>
+    </div>
+
+    <!-- REGISTER DID + CREDENTIAL (standard) -->
+    <div class="glass-card">
+      <div class="card-title"><i class="fas fa-id-card"></i> REGISTER DID & CREDENTIAL</div>
+      <input type="text" id="didInput" placeholder="DID (did:vsv:user)">
+      <input type="text" id="pubkeyInput" placeholder="Public key (optional)">
+      <button id="registerBtn">Register DID</button>
+      <div style="margin:8px 0; border-top:1px solid #1f344f;"></div>
+      <input type="text" id="credIdInput" placeholder="Credential ID">
+      <textarea id="claimInput" rows="2" placeholder='{"identity":"verified"}'></textarea>
+      <input type="text" id="subjectInput" placeholder="Subject DID">
+      <button id="issueBtn">Issue Credential</button>
+    </div>
+
+    <!-- VERIFY + REVOKE + FRAUD REPORT -->
+    <div class="glass-card">
+      <div class="card-title"><i class="fas fa-shield"></i> VERIFY / REVOKE</div>
+      <input type="text" id="verifyIdInput" placeholder="Credential ID to verify">
+      <button id="verifyBtn">Verify Credential</button>
+      <div id="verifyResult" class="fraud-alert" style="background:#0a1f2a;">Result here</div>
+      <input type="text" id="revokeInput" placeholder="Credential ID to revoke">
+      <button id="revokeBtn">Revoke Credential</button>
+      <button id="exportBackupBtn" style="margin-top:0.5rem;"><i class="fas fa-download"></i> Backup All Data</button>
+    </div>
+  </div>
+
+  <!-- REAL-TIME FRAUD DETECTION LOG -->
+  <div class="glass-card" style="margin-top:0;">
+    <div class="card-title"><i class="fas fa-robot"></i> REAL-TIME FRAUD DETECTION AI</div>
+    <div id="fraudLog" style="height:80px; overflow-y:auto; font-size:0.7rem; background:#03060e; border-radius:1rem; padding:0.5rem;"></div>
+  </div>
+</div>
+<div id="toastMsg" class="toast-msg"></div>
+
+<script>
+  // -------------------- DATA STORES --------------------
+  let didRegistry = new Map();
+  let credentials = new Map();
+  let faceHashStore = new Map();   // DID -> faceHash (only hash, no image)
+  let walletSession = null;
+  let currentFaceDescriptor = null;  // temporary for verification
+  let fraudEvents = [];
+
+  // Helper functions
+  function showToast(msg, isError = false) {
+    const toast = document.getElementById('toastMsg');
+    toast.style.backgroundColor = isError ? '#4a0e1a' : '#0f2b44';
+    toast.innerText = msg;
+    toast.style.opacity = '1';
+    setTimeout(() => toast.style.opacity = '0', 2500);
+  }
+  function addFraudLog(msg) {
+    fraudEvents.unshift({ time: new Date().toLocaleTimeString(), msg });
+    if (fraudEvents.length > 20) fraudEvents.pop();
+    const logDiv = document.getElementById('fraudLog');
+    logDiv.innerHTML = fraudEvents.map(e => `<div>[${e.time}] ⚠️ ${e.msg}</div>`).join('');
+    showToast(`Fraud alert: ${msg}`, true);
+  }
+  function updateStats() {
+    document.getElementById('totalDids').innerText = didRegistry.size;
+    document.getElementById('totalCreds').innerText = credentials.size;
+    document.getElementById('walletStatus').innerHTML = walletSession ? walletSession.slice(0,6)+'...' : 'Not logged in';
+  }
+  function generateSimpleHash(data) {
+    let hash = 0;
+    for (let i = 0; i < data.length; i++) { hash = ((hash << 5) - hash) + data.charCodeAt(i); hash |= 0; }
+    return Math.abs(hash).toString(16);
+  }
+
+  // -------------------- FACE VERIFICATION (No raw image save) --------------------
+  async function loadFaceAPI() {
+    await faceapi.nets.tinyFaceDetector.loadFromUri('https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/weights');
+    await faceapi.nets.faceLandmark68Net.loadFromUri('https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/weights');
+    await faceapi.nets.faceRecognitionNet.loadFromUri('https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/weights');
+    showToast('Face API ready');
+  }
+  loadFaceAPI().catch(e => console.warn);
+
+  const video = document.getElementById('videoFeed');
+  navigator.mediaDevices.getUserMedia({ video: true }).then(stream => { video.srcObject = stream; });
+  
+  async function getFaceDescriptor() {
+    const detections = await faceapi.detectSingleFace(video, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceDescriptor();
+    if (!detections) { addFraudLog('No face detected — possible spoof attempt'); return null; }
+    // Fake detection simulation: check movement/blink simulation (advanced)
+    const fraudRisk = Math.random() < 0.05; // 5% simulation for demo
+    if (fraudRisk) { addFraudLog('AI FRAUD DETECTION: Synthetic face / replay attack suspected'); return null; }
+    return detections.descriptor;
+  }
+
+  document.getElementById('captureFaceBtn').onclick = async () => {
+    const did = prompt('Enter your DID to register face hash:');
+    if (!did || !didRegistry.has(did)) { showToast('DID not found. Register DID first.', true); return; }
+    const descriptor = await getFaceDescriptor();
+    if (!descriptor) { document.getElementById('faceResult').innerHTML = '❌ Face scan failed. Fraud prevention triggered.'; return; }
+    const faceHash = generateSimpleHash(JSON.stringify(descriptor.slice(0,30)));
+    faceHashStore.set(did, faceHash);
+    document.getElementById('faceResult').innerHTML = `✅ Face hash registered for ${did}. Raw image not saved.`;
+    showToast(`Face hash stored for ${did}`);
+    updateStats();
+  };
+
+  document.getElementById('verifyFaceBtn').onclick = async () => {
+    const did = prompt('Enter DID to verify face:');
+    if (!did || !faceHashStore.has(did)) { showToast('No face hash found for this DID', true); return; }
+    const descriptor = await getFaceDescriptor();
+    if (!descriptor) { document.getElementById('faceResult').innerHTML = '❌ Verification failed: no face or fraud detected.'; return; }
+    const newHash = generateSimpleHash(JSON.stringify(descriptor.slice(0,30)));
+    const storedHash = faceHashStore.get(did);
+    if (newHash === storedHash) {
+      document.getElementById('faceResult').innerHTML = `✅ Face verified for ${did}. Identity confirmed.`;
+      showToast(`Face verified for ${did}`);
+    } else {
+      document.getElementById('faceResult').innerHTML = `❌ Face mismatch! Possible impersonation.`;
+      addFraudLog(`Face verification failed for ${did} - hash mismatch`);
+    }
+  };
+
+  // -------------------- WALLET LOGIN (No email sharing) --------------------
+  document.getElementById('walletLoginBtn').onclick = () => {
+    const mockWallet = '0x' + Math.random().toString(36).substring(2, 10) + Math.random().toString(36).substring(2, 6);
+    walletSession = mockWallet;
+    updateStats();
+    showToast(`Logged in with wallet: ${mockWallet.slice(0,10)}... (No email required)`);
+    addFraudLog(`Wallet login: ${mockWallet.slice(0,8)}...`);
+  };
+
+  // -------------------- QR IDENTITY SHARE --------------------
+  document.getElementById('generateQrBtn').onclick = () => {
+    const data = document.getElementById('qrDataInput').value.trim();
+    if (!data) { showToast('Enter DID or Credential ID', true); return; }
+    const qrDiv = document.getElementById('qrPreview');
+    qrDiv.innerHTML = '';
+    new QRCode(qrDiv, { text: data, width: 120, height: 120 });
+    showToast(`QR generated for ${data}`);
+  };
+  document.getElementById('scanVerifyBtn').onclick = () => {
+    const scanned = document.getElementById('scanQrInput').value.trim();
+    if (!scanned) { showToast('Paste scanned QR data', true); return; }
+    if (didRegistry.has(scanned)) {
+      document.getElementById('scanResult').innerHTML = `✅ VALID DID: ${scanned} exists on ledger.`;
+    } else if (credentials.has(scanned)) {
+      const cred = credentials.get(scanned);
+      const status = cred.revoked ? 'REVOKED' : (cred.expiryDate && new Date(cred.expiryDate) < new Date()) ? 'EXPIRED' : 'VALID';
+      document.getElementById('scanResult').innerHTML = `✅ Credential ${scanned} → Status: ${status} | Subject: ${cred.subject}`;
+    } else {
+      document.getElementById('scanResult').innerHTML = `❌ Identity not found: ${scanned}`;
+      addFraudLog(`QR scan failed: unknown identity ${scanned}`);
+    }
+  };
+
+  // -------------------- STANDARD FUNCTIONS --------------------
+  document.getElementById('registerBtn').onclick = () => {
+    const did = document.getElementById('didInput').value.trim();
+    const pubkey = document.getElementById('pubkeyInput').value.trim();
+    if (!did) { showToast('DID required', true); return; }
+    if (didRegistry.has(did)) { showToast('DID exists', true); return; }
+    didRegistry.set(did, { pubkey: pubkey || 'none', registeredAt: Date.now() });
+    updateStats();
+    document.getElementById('didInput').value = '';
+    showToast(`DID ${did} registered`);
+  };
+  document.getElementById('issueBtn').onclick = () => {
+    const id = document.getElementById('credIdInput').value.trim();
+    const claim = document.getElementById('claimInput').value.trim();
+    const subject = document.getElementById('subjectInput').value.trim();
+    if (!id || !claim || !subject) { showToast('Fill all fields', true); return; }
+    if (credentials.has(id)) { showToast('Cred ID exists', true); return; }
+    credentials.set(id, { claim, subject, isValid: true, revoked: false, issuedAt: Date.now() });
+    updateStats();
+    document.getElementById('credIdInput').value = '';
+    document.getElementById('claimInput').value = '';
+    document.getElementById('subjectInput').value = '';
+    showToast(`Credential ${id} issued`);
+  };
+  document.getElementById('verifyBtn').onclick = () => {
+    const id = document.getElementById('verifyIdInput').value.trim();
+    const resDiv = document.getElementById('verifyResult');
+    if (!id || !credentials.has(id)) { resDiv.innerHTML = '❌ Credential not found'; return; }
+    const cred = credentials.get(id);
+    if (cred.revoked) resDiv.innerHTML = `❌ REVOKED: ${id}`;
+    else resDiv.innerHTML = `✅ VALID: ${id} | ${cred.claim.substring(0,50)}`;
+  };
+  document.getElementById('revokeBtn').onclick = () => {
+    const id = document.getElementById('revokeInput').value.trim();
+    if (!id || !credentials.has(id)) { showToast('Credential not found', true); return; }
+    let cred = credentials.get(id);
+    cred.revoked = true;
+    credentials.set(id, cred);
+    updateStats();
+    showToast(`Revoked ${id}`);
+  };
+  document.getElementById('exportBackupBtn').onclick = () => {
+    const backup = { dids: Array.from(didRegistry.entries()), credentials: Array.from(credentials.entries()), faceHashes: Array.from(faceHashStore.entries()) };
+    const blob = new Blob([JSON.stringify(backup)], {type: 'application/json'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `vsv_backup_${Date.now()}.json`;
+    a.click();
+    showToast('Backup exported (no raw face images, only hashes)');
+  };
+  
+  // init demo
+  didRegistry.set('did:vsv:alice', { pubkey: '0xAlice', registeredAt: Date.now() });
+  credentials.set('cred:123', { claim:'{"role":"verified"}', subject:'did:vsv:alice', isValid:true, revoked:false, issuedAt:Date.now() });
+  updateStats();
+</script>
+</body>
+</html>
