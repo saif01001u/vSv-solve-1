@@ -1,12 +1,9 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <meta name="theme-color" content="#05070f">
-  <meta name="description" content="VSV SOLVE - Decentralized Identity Platform with Face Verification, 2FA, API, PWA, QR Sharing">
-  <link rel="manifest" href="data:application/manifest+json,{%22name%22:%22VSV%20SOLVE%20Identity%22,%22short_name%22:%22VSV%20SOLVE%22,%22start_url%22:%22.%22,%22display%22:%22standalone%22,%22background_color%22:%22%2305070f%22,%22theme_color%22:%22%233b82f6%22,%22icons%22:[{%22src%22:%22https://placehold.co/192x192/3b82f6/white?text=VSV%22,%22sizes%22:%22192x192%22,%22type%22:%22image/png%22}]}">
-  <title>VSV · SOLVE | Complete Identity Platform</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VSV · SOLVE | Identity Platform</title>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
@@ -18,298 +15,339 @@
       font-family: 'Space Grotesk', sans-serif;
       color: #eef5ff;
       min-height: 100vh;
-      transition: background 0.3s ease, color 0.3s ease;
     }
-    body.light-mode { background: #f0f4fc; color: #1a1a2e; }
-    body.light-mode .glass-card { background: rgba(255,255,255,0.85); border-color: rgba(59,130,246,0.3); color: #1a1a2e; }
-    body.light-mode input, body.light-mode textarea { background: #ffffff; color: #1a1a2e; border-color: #cbd5e1; }
-    body.light-mode .stats-panel { background: rgba(255,255,255,0.7); }
-    body.light-mode .btn-cyber { background: rgba(200,210,240,0.8); color: #1a1a2e; border-color: #3b82f6; }
-    .bg-cyber { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 20% 30%, #0a0f1f, #010105); z-index: -2; transition: 0.3s; }
-    body.light-mode .bg-cyber { background: radial-gradient(circle at 20% 30%, #e0e7ff, #f8fafc); }
-    .container { max-width: 1600px; margin: 0 auto; padding: 1.5rem; position: relative; z-index: 2; }
+    .container { max-width: 1400px; margin: 0 auto; padding: 1.5rem; }
     .top-bar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem; }
-    .logo-group { display: flex; align-items: baseline; gap: 1rem; flex-wrap: wrap; }
-    .logo-vsv { font-size: 2.4rem; font-weight: 800; background: linear-gradient(135deg, #fff, #7aa9ff); -webkit-background-clip: text; background-clip: text; color: transparent; }
-    .vs-symbol { font-size: 1.5rem; color: #3b82f6; }
-    .logo-solve { font-size: 2.2rem; font-weight: 800; background: linear-gradient(135deg, #b3ffe0, #2dd4bf); -webkit-background-clip: text; background-clip: text; color: transparent; }
-    .btn-cyber { background: rgba(20,30,55,0.7); border: 1px solid #2f4b7a; border-radius: 2rem; padding: 0.5rem 1rem; cursor: pointer; transition: 0.2s; color: white; font-family: inherit; }
-    .btn-cyber:hover { background: #1e3a6b; transform: translateY(-2px); }
-    .stats-panel { display: flex; flex-wrap: wrap; gap: 1rem; background: rgba(8,12,24,0.6); backdrop-filter: blur(12px); border-radius: 1.5rem; padding: 1rem 1.5rem; margin-bottom: 2rem; justify-content: space-between; }
+    .logo-vsv { font-size: 2rem; font-weight: 800; background: linear-gradient(135deg, #fff, #7aa9ff); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .logo-solve { font-size: 2rem; font-weight: 800; background: linear-gradient(135deg, #b3ffe0, #2dd4bf); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .btn-cyber { background: rgba(20,30,55,0.7); border: 1px solid #2f4b7a; border-radius: 2rem; padding: 0.5rem 1rem; cursor: pointer; color: white; }
+    .stats-panel { display: flex; flex-wrap: wrap; gap: 1rem; background: rgba(8,12,24,0.6); border-radius: 1.5rem; padding: 1rem; margin-bottom: 2rem; justify-content: space-between; }
     .stat-card { text-align: center; }
     .stat-number { font-size: 1.8rem; font-weight: 700; color: #60a5fa; }
-    .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
-    .glass-card { background: rgba(10,15,28,0.7); backdrop-filter: blur(10px); border-radius: 1.8rem; border: 1px solid rgba(59,130,246,0.2); padding: 1.5rem; transition: 0.2s; }
-    .glass-card:hover { border-color: #3b82f6; transform: translateY(-3px); }
-    .card-title { font-size: 1.2rem; font-weight: 600; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; }
-    input, textarea, select { width: 100%; background: #030712; border: 1px solid #2d3a5e; border-radius: 1rem; padding: 0.7rem 1rem; color: white; font-family: inherit; margin-bottom: 0.8rem; }
-    button { background: #0f2b44; border: none; border-radius: 2rem; padding: 0.7rem 1rem; font-weight: 600; color: white; cursor: pointer; width: 100%; margin-top: 0.3rem; transition: 0.2s; }
-    button:hover { background: #1e3a6b; transform: scale(0.98); }
+    .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+    .glass-card { background: rgba(10,15,28,0.7); border-radius: 1.5rem; border: 1px solid rgba(59,130,246,0.2); padding: 1.5rem; }
+    .card-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 1rem; }
+    input, textarea { width: 100%; background: #030712; border: 1px solid #2d3a5e; border-radius: 1rem; padding: 0.7rem; color: white; margin-bottom: 0.8rem; }
+    button { background: #0f2b44; border: none; border-radius: 2rem; padding: 0.7rem; color: white; cursor: pointer; width: 100%; margin-top: 0.3rem; }
+    button:hover { background: #1e3a6b; }
     .video-box { width: 100%; border-radius: 1rem; border: 2px solid #3b82f6; margin-bottom: 0.5rem; background: #000; }
-    .toast-msg { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); background: #111827; border: 1px solid #3b82f6; padding: 10px 20px; border-radius: 40px; z-index: 9999; opacity: 0; transition: 0.2s; pointer-events: none; font-size: 0.8rem; white-space: nowrap; }
-    .notification-panel { position: fixed; top: 20px; right: 20px; width: 320px; z-index: 10000; max-height: 400px; overflow-y: auto; }
-    .notification { background: #1e293b; border-left: 4px solid #3b82f6; padding: 12px; margin-bottom: 8px; border-radius: 8px; animation: slideIn 0.3s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
-    body.light-mode .notification { background: #ffffff; color: #1a1a2e; }
-    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-    .api-key-box { background: #030712; border-radius: 1rem; padding: 0.5rem; font-family: monospace; font-size: 0.7rem; word-break: break-all; margin-top: 0.5rem; }
-    .charts-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
-    @media (max-width: 700px) { .container { padding: 1rem; } .toast-msg { white-space: normal; } .notification-panel { width: 260px; } }
+    .toast-msg { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #111827; border: 1px solid #3b82f6; padding: 8px 16px; border-radius: 40px; z-index: 9999; opacity: 0; transition: 0.2s; font-size: 0.8rem; }
+    .api-key-box { background: #030712; border-radius: 1rem; padding: 0.5rem; font-size: 0.7rem; word-break: break-all; margin-top: 0.5rem; }
+    @media (max-width: 700px) { .container { padding: 1rem; } }
   </style>
 </head>
 <body>
-<div class="bg-cyber"></div>
-<div class="notification-panel" id="notificationPanel"></div>
 <div class="container">
   <div class="top-bar">
-    <div class="logo-group"><span class="logo-vsv">VSV</span><span class="vs-symbol">⚡</span><span class="logo-solve">SOLVE</span></div>
-    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-      <button id="themeToggleBtn" class="btn-cyber"><i class="fas fa-moon"></i> THEME</button>
-      <button id="pwaInstallBtn" class="btn-cyber" style="display:none;"><i class="fas fa-download"></i> INSTALL APP</button>
-      <button id="walletLoginBtn" class="btn-cyber"><i class="fas fa-wallet"></i> WALLET</button>
+    <div><span class="logo-vsv">VSV</span> <span style="color:#3b82f6">⚡</span> <span class="logo-solve">SOLVE</span></div>
+    <div style="display: flex; gap: 0.5rem;">
+      <button id="themeBtn" class="btn-cyber">🌓 THEME</button>
+      <button id="walletBtn" class="btn-cyber">🔗 WALLET</button>
     </div>
   </div>
 
   <div class="stats-panel">
-    <div class="stat-card"><div class="stat-number" id="totalDids">0</div><div class="stat-label">ACTIVE DIDS</div></div>
-    <div class="stat-card"><div class="stat-number" id="totalCreds">0</div><div class="stat-label">CREDENTIALS</div></div>
+    <div class="stat-card"><div class="stat-number" id="didCount">0</div><div class="stat-label">ACTIVE DIDS</div></div>
+    <div class="stat-card"><div class="stat-number" id="credCount">0</div><div class="stat-label">CREDENTIALS</div></div>
     <div class="stat-card"><div class="stat-number" id="walletStatus">Not logged in</div><div class="stat-label">WALLET</div></div>
-    <div class="stat-card"><div class="stat-number" id="twoFAStatus">OFF</div><div class="stat-label">2FA STATUS</div></div>
+    <div class="stat-card"><div class="stat-number" id="twofaStatus">OFF</div><div class="stat-label">2FA</div></div>
   </div>
 
   <div class="grid-4">
-    <!-- FACE + 2FA -->
     <div class="glass-card">
-      <div class="card-title"><span><i class="fas fa-face-smile"></i> FACE + 2FA</span></div>
-      <video id="videoFeed" class="video-box" autoplay muted playsinline width="100%" height="180"></video>
-      <button id="captureFaceBtn"><i class="fas fa-camera"></i> REGISTER FACE HASH</button>
-      <button id="verifyFaceBtn" style="background:#1e4a6e;"><i class="fas fa-shield-alt"></i> VERIFY FACE + 2FA</button>
-      <div id="faceResult" style="font-size:0.7rem; margin-top:0.5rem; text-align:center;"></div>
-      <div id="twoFACode" style="display:none; margin-top:0.5rem;"><input type="text" id="otpInput" placeholder="Enter 2FA Code"><button id="verify2FABtn">Confirm 2FA</button></div>
-      <div style="font-size:0.6rem; color:#6a8faf; margin-top:0.5rem;">🔒 Raw image never saved. SHA-256 hash only.</div>
+      <div class="card-title">📸 FACE + 2FA</div>
+      <video id="video" class="video-box" autoplay muted playsinline></video>
+      <button id="registerFaceBtn">📝 REGISTER FACE HASH</button>
+      <button id="verifyFaceBtn">🔐 VERIFY FACE + 2FA</button>
+      <div id="faceResult" style="font-size:0.7rem; margin-top:0.5rem;"></div>
+      <div id="twofaBox" style="display:none;"><input type="text" id="otpInput" placeholder="Enter 6-digit code"><button id="confirm2faBtn">Confirm 2FA</button></div>
     </div>
 
-    <!-- API KEY + TEST -->
     <div class="glass-card">
-      <div class="card-title"><i class="fas fa-key"></i> API KEY SYSTEM</div>
-      <button id="generateApiBtn"><i class="fas fa-sync-alt"></i> GENERATE API KEY</button>
+      <div class="card-title">🔑 API KEY SYSTEM</div>
+      <button id="genApiBtn">GENERATE API KEY</button>
       <div id="apiKeyDisplay" class="api-key-box">No API key</div>
-      <input type="text" id="apiTestCredId" placeholder="Credential ID to verify">
+      <input type="text" id="apiCredId" placeholder="Credential ID">
       <button id="testApiBtn">TEST API VERIFY</button>
-      <div id="apiResult" style="font-size:0.6rem; margin-top:0.3rem;"></div>
+      <div id="apiResult" style="font-size:0.6rem;"></div>
     </div>
 
-    <!-- QR SHARE -->
     <div class="glass-card">
-      <div class="card-title"><i class="fas fa-qrcode"></i> QR IDENTITY SHARE</div>
-      <input type="text" id="qrDataInput" placeholder="DID or Credential ID">
-      <button id="generateQrBtn">GENERATE QR</button>
-      <div id="qrPreview" style="display:flex; justify-content:center; margin-top:0.8rem;"></div>
-      <input type="text" id="scanQrInput" placeholder="Paste scanned QR data">
+      <div class="card-title">📱 QR IDENTITY SHARE</div>
+      <input type="text" id="qrInput" placeholder="DID or Credential ID">
+      <button id="genQrBtn">GENERATE QR</button>
+      <div id="qrPreview" style="display:flex; justify-content:center; margin:0.5rem 0;"></div>
+      <input type="text" id="scanInput" placeholder="Paste scanned QR data">
       <button id="scanVerifyBtn">VERIFY SCANNED</button>
-      <div id="scanResult" style="font-size:0.7rem; margin-top:0.5rem;"></div>
+      <div id="scanResult" style="font-size:0.7rem;"></div>
     </div>
 
-    <!-- REGISTER DID + CREDENTIAL -->
     <div class="glass-card">
-      <div class="card-title"><i class="fas fa-id-card"></i> REGISTER</div>
+      <div class="card-title">🆔 REGISTER</div>
       <input type="text" id="didInput" placeholder="DID (did:vsv:user)">
-      <input type="text" id="pubkeyInput" placeholder="Public key">
-      <button id="registerBtn">REGISTER DID</button>
-      <div style="margin:8px 0; border-top:1px solid #1f344f;"></div>
+      <input type="text" id="pubkeyInput" placeholder="Public key (optional)">
+      <button id="registerDidBtn">REGISTER DID</button>
+      <div style="margin:10px 0; border-top:1px solid #1f344f;"></div>
       <input type="text" id="credIdInput" placeholder="Credential ID">
       <textarea id="claimInput" rows="2" placeholder='{"identity":"verified"}'></textarea>
       <input type="text" id="subjectInput" placeholder="Subject DID">
-      <button id="issueBtn">ISSUE CREDENTIAL</button>
-      <button id="exportBackupBtn" style="margin-top:0.5rem;"><i class="fas fa-download"></i> BACKUP ALL</button>
+      <button id="issueCredBtn">ISSUE CREDENTIAL</button>
+      <button id="backupBtn">💾 BACKUP ALL</button>
     </div>
   </div>
 
-  <!-- CHARTS + SEARCH + AUDIT -->
-  <div class="charts-row">
-    <div class="glass-card"><div class="card-title"><i class="fas fa-chart-line"></i> ANALYTICS</div><canvas id="credChart" height="150"></canvas></div>
-    <div class="glass-card"><div class="card-title"><i class="fas fa-search"></i> SEARCH & FILTER</div><input type="text" id="searchInput" placeholder="Search DID / Credential ID..."><select id="filterSelect"><option value="all">All</option><option value="valid">Valid Only</option><option value="revoked">Revoked Only</option></select><div id="searchResults" style="font-size:0.7rem; margin-top:0.5rem; max-height:120px; overflow-y:auto;"></div></div>
-    <div class="glass-card"><div class="card-title"><i class="fas fa-history"></i> AUDIT LOG <button id="clearLogBtn" style="width:auto; padding:2px 10px; font-size:0.6rem; background:#1f2a44;">Clear</button></div><div id="auditLog" style="height:120px; overflow-y:auto; font-size:0.65rem; background:#03060e; border-radius:1rem; padding:0.5rem;"></div></div>
-  </div>
-
-  <!-- VERIFY/REVOKE + FRAUD LOG -->
-  <div class="glass-card">
-    <div class="card-title"><i class="fas fa-shield-alt"></i> VERIFY / REVOKE</div>
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.5rem;">
-      <div><input type="text" id="verifyIdInput" placeholder="Credential ID"><button id="verifyBtn">VERIFY</button><div id="verifyResult" style="font-size:0.7rem; margin-top:0.3rem;"></div></div>
-      <div><input type="text" id="revokeInput" placeholder="Credential ID"><button id="revokeBtn">REVOKE</button></div>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+    <div class="glass-card">
+      <div class="card-title">🔍 VERIFY / REVOKE</div>
+      <input type="text" id="verifyId" placeholder="Credential ID">
+      <button id="verifyCredBtn">VERIFY</button>
+      <div id="verifyResult" style="font-size:0.7rem; margin-top:0.3rem;"></div>
+      <input type="text" id="revokeId" placeholder="Credential ID to revoke">
+      <button id="revokeCredBtn">REVOKE</button>
     </div>
-    <div id="fraudLog" style="height:60px; overflow-y:auto; font-size:0.7rem; background:#03060e; border-radius:1rem; padding:0.5rem; margin-top:0.5rem;"></div>
+    <div class="glass-card">
+      <div class="card-title">📋 AUDIT LOG <button id="clearLogBtn" style="width:auto; padding:2px 8px; font-size:0.6rem;">Clear</button></div>
+      <div id="auditLog" style="height:100px; overflow-y:auto; font-size:0.65rem; background:#03060e; border-radius:1rem; padding:0.5rem;"></div>
+      <div id="fraudLog" style="height:50px; overflow-y:auto; font-size:0.65rem; background:#03060e; border-radius:1rem; padding:0.5rem; margin-top:0.5rem;"></div>
+    </div>
   </div>
 </div>
 <div id="toastMsg" class="toast-msg"></div>
 
 <script>
-  // ==================== DATA STORES ====================
+  // Data stores
   let didRegistry = new Map();
   let credentials = new Map();
   let faceHashStore = new Map();
   let walletSession = null;
   let apiKey = null;
   let twoFAEnabled = false;
-  let current2FACode = null;
-  let fraudEvents = [];
-  let auditEntries = [];
-  let chartInstance = null;
+  let currentOTP = null;
+  let auditLog = [];
+  let fraudLog = [];
 
-  // Helper Functions
   function showToast(msg, isError = false) {
     const toast = document.getElementById('toastMsg');
     toast.style.backgroundColor = isError ? '#7a1a2a' : '#0f2b44';
     toast.innerText = msg;
     toast.style.opacity = '1';
-    setTimeout(() => toast.style.opacity = '0', 2500);
-  }
-
-  function addNotification(title, message, type = 'info') {
-    const panel = document.getElementById('notificationPanel');
-    const notif = document.createElement('div');
-    notif.className = 'notification';
-    notif.style.borderLeftColor = type === 'error' ? '#ef4444' : '#3b82f6';
-    notif.innerHTML = `<strong>${title}</strong><br><small>${message}</small>`;
-    panel.appendChild(notif);
-    setTimeout(() => notif.remove(), 4000);
+    setTimeout(() => toast.style.opacity = '0', 2000);
   }
 
   function addAudit(action, details) {
-    auditEntries.unshift({ time: new Date().toLocaleTimeString(), action, details });
-    if (auditEntries.length > 50) auditEntries.pop();
-    const auditDiv = document.getElementById('auditLog');
-    auditDiv.innerHTML = auditEntries.map(e => `<div>[${e.time}] ${e.action}: ${e.details}</div>`).join('');
+    auditLog.unshift({ time: new Date().toLocaleTimeString(), action, details });
+    if (auditLog.length > 30) auditLog.pop();
+    document.getElementById('auditLog').innerHTML = auditLog.map(e => `<div>[${e.time}] ${e.action}: ${e.details}</div>`).join('');
   }
 
-  function addFraudLog(msg) {
-    fraudEvents.unshift({ time: new Date().toLocaleTimeString(), msg });
-    if (fraudEvents.length > 15) fraudEvents.pop();
-    document.getElementById('fraudLog').innerHTML = fraudEvents.map(e => `<div>[${e.time}] ⚠️ ${e.msg}</div>`).join('');
-    addNotification('Fraud Alert', msg, 'error');
+  function addFraud(msg) {
+    fraudLog.unshift({ time: new Date().toLocaleTimeString(), msg });
+    if (fraudLog.length > 10) fraudLog.pop();
+    document.getElementById('fraudLog').innerHTML = fraudLog.map(e => `<div>⚠️ [${e.time}] ${e.msg}</div>`).join('');
+    showToast(`Fraud: ${msg}`, true);
   }
 
-  function updateStats() {
-    document.getElementById('totalDids').innerText = didRegistry.size;
-    document.getElementById('totalCreds').innerText = credentials.size;
+  function updateUI() {
+    document.getElementById('didCount').innerText = didRegistry.size;
+    document.getElementById('credCount').innerText = credentials.size;
     document.getElementById('walletStatus').innerHTML = walletSession ? walletSession.slice(0,8)+'...' : 'Not logged in';
-    document.getElementById('twoFAStatus').innerHTML = twoFAEnabled ? 'ON' : 'OFF';
-    updateChart();
-    renderSearch();
+    document.getElementById('twofaStatus').innerHTML = twoFAEnabled ? 'ON' : 'OFF';
   }
 
-  function updateChart() {
-    const ctx = document.getElementById('credChart')?.getContext('2d');
-    if (!ctx) return;
-    const total = credentials.size;
-    const valid = Array.from(credentials.values()).filter(c => !c.revoked).length;
-    const revoked = Array.from(credentials.values()).filter(c => c.revoked).length;
-    if (chartInstance) chartInstance.destroy();
-    chartInstance = new Chart(ctx, { type: 'bar', data: { labels: ['Total', 'Valid', 'Revoked'], datasets: [{ label: 'Credentials', data: [total, valid, revoked], backgroundColor: '#3b82f6' }] } });
-  }
-
-  async function generateHashFromImageData(imageData) {
-    const str = JSON.stringify(imageData.slice(0, 3000));
+  async function generateHashFromVideo() {
+    const video = document.getElementById('video');
+    const canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    canvas.getContext('2d').drawImage(video, 0, 0);
+    const imageData = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height);
+    const str = JSON.stringify(imageData.data.slice(0, 2000));
     const msgBuffer = new TextEncoder().encode(str);
     const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2,'0')).join('');
   }
 
   // Camera
-  const video = document.getElementById('videoFeed');
-  navigator.mediaDevices.getUserMedia({ video: true }).then(stream => video.srcObject = stream).catch(e => showToast('Camera access required', true));
+  navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
+    document.getElementById('video').srcObject = stream;
+  }).catch(() => showToast('Camera access needed', true));
 
-  // Face + 2FA
-  document.getElementById('captureFaceBtn').onclick = async () => {
+  // Register Face
+  document.getElementById('registerFaceBtn').onclick = async () => {
     const did = prompt('Enter DID for face registration:');
     if (!did || !didRegistry.has(did)) { showToast('DID not found', true); return; }
-    const canvas = document.createElement('canvas');
-    canvas.width = video.videoWidth; canvas.height = video.videoHeight;
-    canvas.getContext('2d').drawImage(video, 0, 0);
-    const hash = await generateHashFromImageData(canvas.getContext('2d').getImageData(0,0,canvas.width,canvas.height).data);
+    const hash = await generateHashFromVideo();
     faceHashStore.set(did, hash);
     document.getElementById('faceResult').innerHTML = `✅ Face hash saved for ${did}`;
     addAudit('FACE', `Hash registered for ${did}`);
     showToast(`Face hash stored for ${did}`);
   };
 
+  // Verify Face + 2FA
   document.getElementById('verifyFaceBtn').onclick = async () => {
     const did = prompt('Enter DID to verify:');
     if (!did || !faceHashStore.has(did)) { showToast('No face hash', true); return; }
-    const canvas = document.createElement('canvas');
-    canvas.width = video.videoWidth; canvas.height = video.videoHeight;
-    canvas.getContext('2d').drawImage(video, 0, 0);
-    const newHash = await generateHashFromImageData(canvas.getContext('2d').getImageData(0,0,canvas.width,canvas.height).data);
+    const newHash = await generateHashFromVideo();
     if (newHash === faceHashStore.get(did)) {
       if (twoFAEnabled) {
-        current2FACode = Math.floor(100000 + Math.random() * 900000).toString();
-        document.getElementById('twoFACode').style.display = 'block';
-        document.getElementById('faceResult').innerHTML = `✅ Face matched! Enter 2FA code: ${current2FACode}`;
-        addNotification('2FA Required', `Your code: ${current2FACode}`, 'info');
+        currentOTP = Math.floor(100000 + Math.random() * 900000).toString();
+        document.getElementById('twofaBox').style.display = 'block';
+        document.getElementById('faceResult').innerHTML = `✅ Face matched! Enter OTP: ${currentOTP}`;
       } else {
         document.getElementById('faceResult').innerHTML = `✅ Face verified for ${did}`;
         addAudit('VERIFY', `Face verified for ${did}`);
         showToast(`Verified ${did}`);
-        addNotification('Verification Success', `${did} verified successfully`);
       }
     } else {
       document.getElementById('faceResult').innerHTML = `❌ Face mismatch!`;
-      addFraudLog(`Face mismatch for ${did}`);
+      addFraud(`Face mismatch for ${did}`);
     }
   };
 
-  document.getElementById('verify2FABtn').onclick = () => {
-    const otp = document.getElementById('otpInput').value;
-    if (otp === current2FACode) {
+  document.getElementById('confirm2faBtn').onclick = () => {
+    if (document.getElementById('otpInput').value === currentOTP) {
       document.getElementById('faceResult').innerHTML = `✅ 2FA Verified! Identity confirmed.`;
-      document.getElementById('twoFACode').style.display = 'none';
+      document.getElementById('twofaBox').style.display = 'none';
       addAudit('2FA', 'Verification successful');
       showToast('2FA successful');
-      addNotification('Security', '2FA verification passed');
     } else {
-      document.getElementById('faceResult').innerHTML = `❌ Invalid 2FA code!`;
-      addFraudLog('Invalid 2FA attempt');
+      document.getElementById('faceResult').innerHTML = `❌ Invalid OTP!`;
+      addFraud('Invalid 2FA attempt');
     }
   };
 
-  // API Key System
-  document.getElementById('generateApiBtn').onclick = () => {
-    apiKey = 'vsv_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 8);
-    document.getElementById('apiKeyDisplay').innerHTML = `<strong>Your API Key:</strong><br>${apiKey}<br><small>Keep it secret!</small>`;
-    addAudit('API', 'New API key generated');
-    showToast('New API key generated');
-  };
-
-  document.getElementById('testApiBtn').onclick = () => {
-    const credId = document.getElementById('apiTestCredId').value.trim();
-    if (!apiKey) { document.getElementById('apiResult').innerHTML = '❌ Generate API key first'; return; }
-    if (!credentials.has(credId)) { document.getElementById('apiResult').innerHTML = '❌ Credential not found'; return; }
-    const cred = credentials.get(credId);
-    const status = cred.revoked ? 'REVOKED' : 'VALID';
-    document.getElementById('apiResult').innerHTML = `✅ API Response: { "credential": "${credId}", "status": "${status}", "subject": "${cred.subject}" }`;
-    addAudit('API', `Verified ${credId} via API`);
-    addNotification('API Call', `Verified ${credId} via API`);
-  };
-
-  // Wallet Login + 2FA Toggle
-  document.getElementById('walletLoginBtn').onclick = () => {
+  // Wallet + 2FA Toggle
+  document.getElementById('walletBtn').onclick = () => {
     if (!walletSession) {
-      walletSession = '0x' + Array.from({length: 40}, () => Math.floor(Math.random() * 16).toString(16)).join('');
+      walletSession = '0x' + Math.random().toString(36).substring(2, 10) + Math.random().toString(36).substring(2, 8);
       showToast(`Wallet: ${walletSession.slice(0,12)}...`);
-      addAudit('WALLET', 'Connected');
     } else {
       walletSession = null;
       showToast('Wallet disconnected');
     }
     twoFAEnabled = !twoFAEnabled;
-    updateStats();
-    addNotification('2FA', twoFAEnabled ? '2FA Enabled' : '2FA Disabled');
+    updateUI();
+    addAudit('WALLET', twoFAEnabled ? 'Connected + 2FA ON' : 'Disconnected');
   };
 
-  // QR Functions
-  document.getElementById('generateQrBtn').onclick = () => {
-    const data = document.getElementById('qrDataInput').value.trim();
-    if (!data) { showToast('Enter DID or Credential ID', true); return; }
+  // API Key
+  document.getElementById('genApiBtn').onclick = () => {
+    apiKey = 'vsv_' + Math.random().toString(36).substring(2, 15);
+    document.getElementById('apiKeyDisplay').innerHTML = `<strong>API Key:</strong><br>${apiKey}`;
+    addAudit('API', 'Key generated');
+    showToast('API key generated');
+  };
+
+  document.getElementById('testApiBtn').onclick = () => {
+    const credId = document.getElementById('apiCredId').value.trim();
+    if (!apiKey) { document.getElementById('apiResult').innerHTML = '❌ Generate API key first'; return; }
+    const cred = credentials.get(credId);
+    if (!cred) { document.getElementById('apiResult').innerHTML = '❌ Credential not found'; return; }
+    document.getElementById('apiResult').innerHTML = `✅ { "credential": "${credId}", "status": "${cred.revoked ? 'REVOKED' : 'VALID'}" }`;
+    addAudit('API', `Verified ${credId}`);
+  };
+
+  // QR
+  document.getElementById('genQrBtn').onclick = () => {
+    const data = document.getElementById('qrInput').value.trim();
+    if (!data) { showToast('Enter data', true); return; }
     document.getElementById('qrPreview').innerHTML = '';
-    new QRCode(document.getElementById('qrPreview'), { text: data, width: 12
+    new QRCode(document.getElementById('qrPreview'), { text: data, width: 100, height: 100 });
+    showToast(`QR for ${data}`);
+  };
+
+  document.getElementById('scanVerifyBtn').onclick = () => {
+    const scanned = document.getElementById('scanInput').value.trim();
+    if (didRegistry.has(scanned)) {
+      document.getElementById('scanResult').innerHTML = `✅ Valid DID: ${scanned}`;
+    } else if (credentials.has(scanned)) {
+      const cred = credentials.get(scanned);
+      document.getElementById('scanResult').innerHTML = `✅ Credential: ${scanned} → ${cred.revoked ? 'REVOKED' : 'VALID'}`;
+    } else {
+      document.getElementById('scanResult').innerHTML = `❌ Not found: ${scanned}`;
+      addFraud(`QR scan failed: ${scanned}`);
+    }
+  };
+
+  // DID Register
+  document.getElementById('registerDidBtn').onclick = () => {
+    const did = document.getElementById('didInput').value.trim();
+    if (!did) { showToast('DID required', true); return; }
+    if (didRegistry.has(did)) { showToast('DID exists', true); return; }
+    didRegistry.set(did, { pubkey: document.getElementById('pubkeyInput').value || 'none', time: Date.now() });
+    updateUI();
+    document.getElementById('didInput').value = '';
+    document.getElementById('pubkeyInput').value = '';
+    addAudit('REGISTER', `DID ${did}`);
+    showToast(`DID ${did} registered`);
+  };
+
+  // Issue Credential
+  document.getElementById('issueCredBtn').onclick = () => {
+    const id = document.getElementById('credIdInput').value.trim();
+    const claim = document.getElementById('claimInput').value.trim();
+    const subject = document.getElementById('subjectInput').value.trim();
+    if (!id || !claim || !subject) { showToast('Fill all fields', true); return; }
+    if (credentials.has(id)) { showToast('ID exists', true); return; }
+    credentials.set(id, { claim, subject, revoked: false, time: Date.now() });
+    updateUI();
+    document.getElementById('credIdInput').value = '';
+    document.getElementById('claimInput').value = '';
+    document.getElementById('subjectInput').value = '';
+    addAudit('ISSUE', `Credential ${id} to ${subject}`);
+    showToast(`Issued ${id}`);
+  };
+
+  // Verify Credential
+  document.getElementById('verifyCredBtn').onclick = () => {
+    const id = document.getElementById('verifyId').value.trim();
+    const cred = credentials.get(id);
+    if (!cred) { document.getElementById('verifyResult').innerHTML = '❌ Not found'; return; }
+    document.getElementById('verifyResult').innerHTML = cred.revoked ? `❌ REVOKED: ${id}` : `✅ VALID: ${id}`;
+  };
+
+  // Revoke
+  document.getElementById('revokeCredBtn').onclick = () => {
+    const id = document.getElementById('revokeId').value.trim();
+    if (!id || !credentials.has(id)) { showToast('Not found', true); return; }
+    credentials.get(id).revoked = true;
+    updateUI();
+    addAudit('REVOKE', `${id}`);
+    showToast(`Revoked ${id}`);
+  };
+
+  // Backup
+  document.getElementById('backupBtn').onclick = () => {
+    const backup = { dids: Array.from(didRegistry.entries()), credentials: Array.from(credentials.entries()), faceHashes: Array.from(faceHashStore.entries()) };
+    const blob = new Blob([JSON.stringify(backup)], {type: 'application/json'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `vsv_backup_${Date.now()}.json`;
+    a.click();
+    showToast('Backup exported');
+  };
+
+  // Theme
+  let dark = true;
+  document.getElementById('themeBtn').onclick = () => {
+    dark = !dark;
+    document.body.style.background = dark ? '#05070f' : '#f0f4fc';
+    document.body.style.color = dark ? '#eef5ff' : '#1a1a2e';
+    showToast(dark ? 'Dark mode' : 'Light mode');
+  };
+
+  document.getElementById('clearLogBtn').onclick = () => {
+    auditLog = [];
+    document.getElementById('auditLog').innerHTML = '';
+    addAudit('SYSTEM', 'Log cleared');
+  };
+
+  // Demo data
+  didRegistry.set('did:vsv:demo', { pubkey: 'demo', time: Date.now() });
+  credentials.set('cred:demo:001', { claim: '{"demo":true}', subject: 'did:vsv:demo', revoked: false, time: Date.now() });
+  updateUI();
+  addAudit('INIT', 'Platform ready - 1 DID, 1 Credential loaded');
+  showToast('VSV SOLVE Ready!');
+</script>
+</body>
+</html>
